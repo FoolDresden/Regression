@@ -33,7 +33,17 @@ def mse(x1, x2, y, w, n=3):
     for i in range(x1.shape[0]):
         err = err + (0.5)*(((w[0]+w[1]*x1[i]+w[2]*x2[i]) - y[i])**2)
     return err    
-    
+
+def mst(y):
+    tot = 0
+    mean = 0
+    for i in range(y.shape[0]):
+        mean = mean + y[i]
+    mean = mean/y.shape[0]
+    for i in range(y.shape[0]):
+        tot = tot + (y[i]-mean)**2
+    return tot
+
 lr = 1e-10;
 w = np.ones(3);
 thresh = 1e-12
@@ -42,7 +52,7 @@ init_test_err = (mse(X1test, X2test, Ytest, w, 3))
 init_train_err = mse(X1train, X2train, Ytrain, w, 3)
 errplot = []
 
-while cnt<=100000:
+while cnt<=100:
     print(cnt)
     sum = calc_sum(w,3);
     a = lr*sum[0]
@@ -52,8 +62,8 @@ while cnt<=100000:
     print(a)
     print(b)
     print(c)
-    if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
-        break
+    #if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
+    #    break
     w = w - [a, b, c]
     err = mse(X1train, X2train, Ytrain, w, 3)
     errplot.append(err)
@@ -63,9 +73,12 @@ while cnt<=100000:
 
 
 pred_values = w[0] + w[1]*X1 + w[2]*X2
-
-
-    
+sse = 0.5*mse(X1,X2,Y,w,3)
+sst = mst(Y)
+rsq = (sst-sse)/sst
+r = rsq**0.5
+mse = sse/Y.shape[0]
+rmse = mse**0.5
 
     
 fig = plt.figure()
