@@ -1,3 +1,4 @@
+import math as math
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -9,6 +10,7 @@ X1 = dataset.iloc[:,1].values
 X2 = dataset.iloc[:,2].values
 Y = dataset.iloc[:,3].values
 
+#677.8960442352434, 4.42942799, -12.24177671
 indices = list(range(X1.shape[0]));
 num_inst = int(0.7*X1.shape[0]);
 np.random.shuffle(indices)
@@ -30,6 +32,7 @@ def calc_sum(w, n=3):
 
 def mse(x1, x2, y, w, n=3):
     err = 0;
+    print(x1.shape[0])
     for i in range(x1.shape[0]):
         err = err + (0.5)*(((w[0]+w[1]*x1[i]+w[2]*x2[i]) - y[i])**2)
     return err    
@@ -44,9 +47,11 @@ def mst(y):
         tot = tot + (y[i]-mean)**2
     return tot
 
-lr = 1e-10;
-w = np.ones(3);
-thresh = 1e-12
+lr = 1e-9;
+#w = np.array([677.8960442352434, 4.42942799, -12.24177671])
+#w = np.array([0.95500818, 0.95106313, 0.20977437])
+w=np.array([1, 1, 1])
+thresh = 1e-11
 cnt = 0
 init_test_err = (mse(X1test, X2test, Ytest, w, 3))
 init_train_err = mse(X1train, X2train, Ytrain, w, 3)
@@ -58,34 +63,36 @@ while cnt<=100:
     a = lr*sum[0]
     b = lr*sum[1]
     c = lr*sum[2]
-    print(sum)
+    #print(sum)
+    print(w)
     print(a)
     print(b)
     print(c)
-    #if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
-    #    break
+    if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
+        break
     w = w - [a, b, c]
     err = mse(X1train, X2train, Ytrain, w, 3)
     errplot.append(err)
-    print(err)
+    print(math.sqrt(err/X1train.shape[0]))
     print("\n")
     cnt=cnt+1
 
 
-pred_values = w[0] + w[1]*X1 + w[2]*X2
-sse = 0.5*mse(X1,X2,Y,w,3)
-sst = mst(Y)
+pred_values = w[0] + w[1]*X1test + w[2]*X2test
+sse = mse(X1test, X2test, Ytest, w, 3)
+sse = 2*sse
+sst = mst(Ytest)
 rsq = (sst-sse)/sst
-r = rsq**0.5
-mse = sse/Y.shape[0]
-rmse = mse**0.5
-
-    
+mserr = sse/Ytest.shape[0]
+rmserr = math.sqrt(mserr)
+ 
+'''
 fig = plt.figure()
 ax = plt.axes(projection="3d")
 #ax.scatter3D(X1,X2,Y,c="red")
-ax.scatter3D(X1,X2,pred_values,c="yellow")
+ax.scatter3D(X1test,X2test,pred_values,c="yellow")
+ax.view_init(45, 0)
 plt.show()
-
+'''
 
 
