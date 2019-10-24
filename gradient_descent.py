@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 
 
-dataset=pd.read_csv('D:\shrey\Documents\StudyMaterial\\fods_project\Data.csv')
+dataset=pd.read_csv('Dataset.txt')
 X1 = dataset.iloc[:,1].values
 X2 = dataset.iloc[:,2].values
 Y = dataset.iloc[:,3].values
