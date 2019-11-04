@@ -10,9 +10,9 @@ X1 = dataset.iloc[:,1].values
 X2 = dataset.iloc[:,2].values
 Y = dataset.iloc[:,3].values
 
-#677.8960442352434, 4.42942799, -12.24177671
+
 indices = list(range(X1.shape[0]));
-num_inst = int(0.7*X1.shape[0]);
+num_inst = int(0.001*X1.shape[0]);
 np.random.shuffle(indices)
 train_ind = indices[:num_inst]
 test_ind = indices[num_inst:]
@@ -20,7 +20,6 @@ test_ind = indices[num_inst:]
 X1train, X1test = X1[train_ind], X1[test_ind]
 X2train, X2test = X2[train_ind], X2[test_ind]
 Ytrain, Ytest = Y[train_ind], Y[test_ind]
-lamda = 1e-9
 
 def calc_sum(w, n=3):
     #n = 3
@@ -49,38 +48,35 @@ def mst(y):
     return tot
 
 lr = 1e-9;
-#w = np.array([677.8960442352434, 4.42942799, -12.24177671])
-#w = np.array([0.95500818, 0.95106313, 0.20977437])
-w=np.array([1, 1, 1])
+w = np.array([0.95487231, 0.94850383, 0.21021318])
 thresh = 1e-11
 cnt = 0
 init_test_err = (mse(X1test, X2test, Ytest, w, 3))
 init_train_err = mse(X1train, X2train, Ytrain, w, 3)
 errplot = []
 
-while cnt<=100:
-    print(cnt)
-    sum = calc_sum(w, 3);
-    lasso = w/abs(w)
-    a = lr*sum[0]
-    b = lr*sum[1]
-    c = lr*sum[2]
-    #print(sum)
-    print(w)
-    print(a)
-    print(b)
-    print(c)
-    if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
-        break
-    w = w - [a, b, c] - 2*lamda*lasso
-    err = mse(X1train, X2train, Ytrain, w, 3)
-    errplot.append(err)
-    print(math.sqrt(2*err/X1train.shape[0]))
-    print("\n")
-    cnt=cnt+1
+# while True:
+#     print(cnt)
+#     sum = calc_sum(w,3);
+#     a = lr*sum[0]
+#     b = lr*sum[1]
+#     c = lr*sum[2]
+#     #print(sum)
+#     print(w)
+#     print(a)
+#     print(b)
+#     print(c)
+#     if abs(a)<=thresh and abs(b)<=thresh and abs(c)<=thresh:
+#         break
+#     w = w - [a, b, c]
+#     err = mse(X1train, X2train, Ytrain, w, 3)
+#     errplot.append(err)
+#     print(math.sqrt(err/X1train.shape[0]))
+#     print("\n")
+#     cnt=cnt+1
 
 
-pred_values = w[0] + w[1]*X1test + w[2]*X2test
+pred_values = w[0] + w[1]*X1train + w[2]*X2train
 sse = mse(X1test, X2test, Ytest, w, 3)
 sse = 2*sse
 sst = mst(Ytest)
@@ -88,13 +84,12 @@ rsq = (sst-sse)/sst
 mserr = sse/Ytest.shape[0]
 rmserr = math.sqrt(mserr)
  
-'''
 fig = plt.figure()
 ax = plt.axes(projection="3d")
-#ax.scatter3D(X1,X2,Y,c="red")
-ax.scatter3D(X1test,X2test,pred_values,c="yellow")
+ax.scatter3D(X1,X2,Y,c="red")
+ax.scatter3D(X1train,X2train,pred_values,c="yellow")
 ax.view_init(45, 0)
 plt.show()
-'''
+
 
 

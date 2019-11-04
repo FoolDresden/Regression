@@ -5,7 +5,7 @@ from mpl_toolkits import mplot3d
 from numpy.linalg import inv
 
 #Read Dataset variables X1, X2 & Y
-dataset = pd.read_csv('Dataset.txt')
+dataset = pd.read_csv('D:\shrey\Documents\StudyMaterial\\fods_project\Data.csv')
 X1 = dataset.iloc[:,1].values
 X2 = dataset.iloc[:,2].values
 Y = dataset.iloc[:,3].values
