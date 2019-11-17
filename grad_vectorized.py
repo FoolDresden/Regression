@@ -37,7 +37,7 @@ def calc_sum(w, n=3):
     return sum
 
 def mse(x1, x2, y, w, n=3):
-    err = 0;
+    err = 0
     print(x1.shape[0])
     for i in range(x1.shape[0]):
         err = err + (0.5)*(((w[0]+w[1]*x1[i]+w[2]*x2[i]) - y[i])**2)
@@ -62,19 +62,20 @@ def mst(y):
     return tot
 
 lr = 1e-9;
-w=np.array([1, 1, 1])
+w=np.array([273, 12, 123])
 thresh = 1e-11
 cnt = 0
 errplot = []
 
 while cnt<=100:
-    if cnt%20==0:
+    if cnt%1==0:
         err = mse(Xtrain[:,1], Xtrain[:,2], Ytrain, w)
         err = (2*err)/Xtrain.shape[0]
         err = math.sqrt(err)
         errplot.append(err)
     print(cnt)
-    w = w - lr*Xtrain.transpose()@(Xtrain@w-Ytrain)
+    #w = w - lr*Xtrain.transpose()@(Xtrain@w-Ytrain)
+    w = w - lr*np.dot(Xtrain.transpose(),(np.dot(Xtrain,w)-Ytrain))
     cnt=cnt+1
 
 pred_values = Xtest@w
